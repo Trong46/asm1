@@ -150,9 +150,4 @@ app.post('/quotes', (req, res) => {
 /*
 app.post('/quotes', (req, res) => {
     console.log(req.body)
-})
-<<<<<<< HEAD
-*/
-=======
-*/
->>>>>>> cd2e9d85ea13b613418a812c51600823fa934f9b
+}) */
