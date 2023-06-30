@@ -4,9 +4,9 @@
 const express = require('express');
 const bodyParser= require('body-parser')
 const app = express();
-
+const router = express.Router();
 const MongoClient = require('mongodb').MongoClient
-
+const mongoose = require('mongoose');
 const connectionString = 'mongodb+srv://trong46:04062003Bo@cluster0.hsuipkk.mongodb.net/'
 
 /*
@@ -32,7 +32,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
         
         // (1a) CREATE: client -> create -> database -> 'star-wars-quotes'
         // -> create -> collection -> 'quotes'
-        const db = client.db('star-wars-quotes')
+        const db = client.db('ATNStore')
         const quotesCollection = db.collection('quotes')
         
         // To tell Express to EJS as the template engine
@@ -46,6 +46,10 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
 
         // To teach the server to read JSON data 
         app.use(bodyParser.json())
+
+        router.get("/", function(req, res, next) {
+            dbConnect.query
+        })
 
         // (2) READ: client -> browser -> url 
         // -> server -> '/' -> collection -> 'quotes' -> find() 
@@ -64,9 +68,13 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
                 .catch(/* ... */)
         })
 
+        app.get("/add",(req, res) =>{
+            res.render("add.ejs");
+        })
+
         // (1b) CREATE: client -> index.ejs -> data -> SUBMIT 
         // -> post -> '/quotes' -> collection -> insert -> result
-        app.post('/quotes', (req, res) => {
+        app.post('/save', (req, res) => {
             quotesCollection.insertOne(req.body)
             .then(result => {
                 
@@ -76,9 +84,15 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
                 // -> redirect -> '/'
                 res.redirect('/')
              })
-            .catch(error => console.error(error))
-        })
-        
+            .catch((error) => {
+                res.status(500).send({
+                    message:
+                    err.message ||
+                    "Error! Some problem happened when creating product",
+                });
+
+            });
+        });
         // (3) UPDATE: client -> click -> 'Replace Yoda's quote'
         // -> replace / create -> 'Yoda' -> 'Darth Vadar'
         app.put('/quotes', (req, res) => {
@@ -95,6 +109,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
                     // If no Yoda quotes exist, force to create a new Darth Vadar quote
                     upsert: true
                 }
+                
             )
             .then(result => res.json('Success'))
             .catch(error => console.error(error))
@@ -107,7 +122,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
                 { name: req.body.name }
             )
             .then(result => {
-                res.json(`Deleted Darth Vadar's quote`)
+                res.json(`Deleted Product`)
             })
             .catch(error => console.error(error))
         })
@@ -137,5 +152,3 @@ app.post('/quotes', (req, res) => {
     console.log(req.body)
 })
 */
-
-
